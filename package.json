@@ -1,0 +1,23 @@
+{
+  "name": "brick-game",
+  "version": "1.0.0",
+  "description": "brick game 9999 in 1",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0ashen/brick-game.git"
+  },
+  "keywords": [
+    "brick",
+    "game"
+  ],
+  "author": "Philipp Ius",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0ashen/brick-game/issues"
+  },
+  "homepage": "https://github.com/0ashen/brick-game#readme"
+}
