@@ -9,11 +9,12 @@ module.exports = (env) => {
         entry: './src/index.ts',
         devServer: {
             static: path.join(__dirname, 'public'),
-            hot: true
+            hot: true,
         },
         plugins: [
             new HtmlWebpackPlugin({
                 title: 'Brick game 9999 in 1',
+                template: 'public/index.html',
             }),
             new webpack.SourceMapDevToolPlugin({
                 filename: '[name].[contenthash].map',
