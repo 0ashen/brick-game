@@ -31,9 +31,12 @@ module.exports = (env) => {
         module: {
             rules: [
                 {
-                    test: /\.css$/,
-                    include: path.resolve(__dirname, 'src'),
-                    use: ['style-loader', 'css-loader'],
+                    test: /\.s[ac]ss$/i,
+                    use: [
+                        'style-loader',
+                        'css-loader',
+                        'sass-loader',
+                    ],
                 },
                 {
                     test: /\.tsx?$/,

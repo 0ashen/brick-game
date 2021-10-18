@@ -1,14 +1,25 @@
-import * as _ from 'lodash';
+import { BrickGame } from './BrickGame.class';
+import { Render } from './Render.class';
+import { Tetris } from './games/Tetris.class';
+import { SimpleRender } from './visualizers/Simple.class';
+import { Game } from './games/Game.abstractClass';
+import { React } from './visualizers/React/React.class';
+import "../public/style.scss";
 
-function component() {
-    const element = document.createElement('pre');
+const render = new Render(
+    [
+        React,
+        SimpleRender,
+    ],
+);
 
-    element.innerHTML = [
-        'Hello webpack!!',
-        '5 cubed is equal to '
-    ].join('\n\n');
-    console.log(_);
-    return element;
-}
+const games: Game[] = [
+    Tetris,
+].map(Class => new Class(render));
 
-document.body.appendChild(component());
+const brickGame = new BrickGame(
+    render,
+    games,
+);
+
+brickGame.start();

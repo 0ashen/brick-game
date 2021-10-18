@@ -1,0 +1,21 @@
+.console {
+  width: 40vh;
+  height: 95%;
+  position: relative;
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding:0;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
