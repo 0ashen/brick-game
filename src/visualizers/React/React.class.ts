@@ -1,10 +1,12 @@
 import { Visualizer } from '../Visualizer.interface';
-import { BGScreen } from '../../Render.class';
+import { Screen } from '../../Render.class';
 import { initReact } from './InitReact';
 import { ScreenState } from './Layout';
+import _ from 'lodash';
 
 export class React extends Visualizer {
     private _setState?: React.Dispatch<React.SetStateAction<ScreenState>>;
+    private lastScreen?: Screen;
 
     constructor() {
         super();
@@ -12,17 +14,19 @@ export class React extends Visualizer {
         initReact(this.setHookDispatch);
     }
 
-    public render(screen: BGScreen): void {
+    public render(screen: Screen): void {
+        this.lastScreen = _.cloneDeep(screen);
         if (this._setState) {
-            this._setState(screen)
+            this._setState(_.cloneDeep(screen));
         } else {
             console.log('setState not set');
         }
     }
 
-    public setHookDispatch = (hookDispatch: React.Dispatch<React.SetStateAction<ScreenState>>) => {
+    private setHookDispatch = (hookDispatch: React.Dispatch<React.SetStateAction<ScreenState>>) => {
         this._setState = hookDispatch;
+        if (this.lastScreen) {
+            this.render(this.lastScreen);
+        }
     };
 }
-
-

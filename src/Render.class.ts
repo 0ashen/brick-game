@@ -1,27 +1,49 @@
 import { Visualizer } from './visualizers/Visualizer.interface';
 import _ from 'lodash';
+import { createEmptyScreen } from './utils/createEmptyScreen';
 
-export type BGScreen = Array<(0 | 1)[]>
+type Pixel = 0 | 1;
+export type PixelRow = [Pixel, Pixel, Pixel, Pixel, Pixel, Pixel, Pixel, Pixel, Pixel, Pixel];
+export type Screen = [
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow,
+    PixelRow
+];
 
 export class Render {
-    private _screen: BGScreen;
-    private currentVisualizer: any;
+    private _screen: Screen;
+    private currentVisualizer: Visualizer;
 
-    constructor(
-        private visualizers: Array<{ new(): Visualizer }>,
-    ) {
-
-        this._screen = Array.from({ length: 20 }, (_) => Array.from({ length: 10 }, (_) => 0));
-        this.currentVisualizer = new visualizers[0];
+    constructor(private visualizers: Array<{ new (): Visualizer }>) {
+        this._screen = createEmptyScreen();
+        this.currentVisualizer = new visualizers[0]();
     }
 
-    public set screen(screen: BGScreen) {
+    public start(screen: Screen) {
+        this._screen = _.cloneDeep(screen);
+        this.currentVisualizer.render(this._screen);
+    }
+
+    public update(screen: Screen) {
         if (_.isEqual(this._screen, screen)) return;
         this._screen = screen;
-        this.draw();
-    }
-
-    private draw() {
         this.currentVisualizer.render(this._screen);
     }
 }

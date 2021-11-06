@@ -1,5 +1,5 @@
-import { BGScreen } from '../Render.class';
+import { Screen } from '../Render.class';
 
 export abstract class Visualizer {
-    abstract render(screen: BGScreen): void
+    abstract render(screen: Screen): void;
 }

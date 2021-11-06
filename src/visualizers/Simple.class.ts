@@ -1,8 +1,10 @@
 import { Visualizer } from './Visualizer.interface';
-import { BGScreen } from '../Render.class';
+import { Screen } from '../Render.class';
 
 export class SimpleRender extends Visualizer {
-    public render(screen: BGScreen): void {
-        document.querySelector('#app')!.innerHTML = `<pre>${screen.map(el => el.join(' ')).join('\r')}</pre>`;
+    public render(screen: Screen): void {
+        document.querySelector('#app')!.innerHTML = `<pre>${screen
+            .map((el) => el.join(' '))
+            .join('\r')}</pre>`;
     }
 }
