@@ -1,25 +1,26 @@
 import { Game } from '../Game.abstract';
 import { Render, Screen } from '../../Render.class';
 import _ from 'lodash';
-import { Figure } from './figures/Figure.abstract';
+import { Direction, Figure } from './Figure.abstract';
 import { I } from './figures/I.class';
 import { J } from './figures/J.class';
 import { L } from './figures/L.class';
 import { Q } from './figures/Q.class';
 import { S } from './figures/S.class';
-import { Direction, T } from './figures/T.class';
+import { T } from './figures/T.class';
 import { Z } from './figures/Z.class';
 import { sleep } from '../../utils/sleep';
 import { createEmptyScreen } from '../../utils/createEmptyScreen';
 import { BrickGame } from '../../BrickGame.class';
 import { Buttons, KeyController } from '../../KeyController.class';
 
-type FiguresSet = Figure[];
-type TempFigureType = T;
+type FiguresSet = { new (): Figure }[];
+
+export const figureHorizontalStartPosition = 4;
 
 export class Tetris extends Game {
     private readonly figures: FiguresSet;
-    private currentFigure: TempFigureType;
+    private currentFigure: Figure;
     private screenHistory: Screen;
 
     constructor(render: Render, brickGame: BrickGame, keyController: KeyController) {
@@ -31,11 +32,19 @@ export class Tetris extends Game {
         keyController.setHandler(Buttons.Left, this.moveFigure(Direction.Left));
         keyController.setHandler(Buttons.Right, this.moveFigure(Direction.Right));
         keyController.setHandler(Buttons.Down, this.moveFigure(Direction.Down));
+        keyController.setHandler(Buttons.Top, this.rotateFigure());
     }
 
     private moveFigure(to: Direction) {
         return () => {
             this.currentFigure.moveTo(to, this.screenHistory);
+            this.updateScreen();
+        };
+    }
+
+    private rotateFigure() {
+        return () => {
+            this.currentFigure.makeRotate(this.screenHistory);
             this.updateScreen();
         };
     }
@@ -54,7 +63,6 @@ export class Tetris extends Game {
                 this.screenHistory = this.mapping(this.currentFigure, this.screenHistory);
                 this.currentFigure = this.randomizeFigure(this.figures);
             }
-
         }
     }
 
@@ -63,18 +71,20 @@ export class Tetris extends Game {
         this.render.update(resultScreen);
     }
 
-    private randomizeFigure(figures: FiguresSet): /*Figure*/ TempFigureType {
-        return new T();
-        // const randomizeNumber = Number.parseInt((Math.random() * figures.length).toString());
-        // return figures[randomizeNumber];
+    private randomizeFigure(figures: FiguresSet): Figure {
+        const randomizeNumber = Number.parseInt((Math.random() * figures.length).toString());
+        return new figures[randomizeNumber]();
     }
 
-    private mapping(figure: TempFigureType, screenHistory: Screen): Screen {
+    private mapping(figure: Figure, screenHistory: Screen): Screen {
         const screen = _.cloneDeep(screenHistory);
 
-        const { x, y } = figure.pos;
-        for (const [x2, y2] of figure.relief) {
-            screen[y + y2][x + x2] = 1;
+        for (const [x, y] of figure.relief) {
+            // if figure upper than screen, just don't mapping to screen
+            if (figure.pos.y + y < 0) {
+                continue;
+            }
+            screen[figure.pos.y + y][figure.pos.x + x] = 1;
         }
 
         return screen;
