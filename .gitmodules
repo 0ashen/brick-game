@@ -1,0 +1,4 @@
+[submodule "brick-game"]
+	path = brick-game
+	url = https://github.com/0ashen/brick-game
+	branch = github-pages
