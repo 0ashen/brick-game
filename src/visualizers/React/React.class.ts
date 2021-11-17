@@ -17,7 +17,7 @@ export class React extends Visualizer {
     public render(screen: Screen): void {
         this.lastScreen = _.cloneDeep(screen);
         if (this._setState) {
-            this._setState(_.cloneDeep(screen));
+            this._setState(this.lastScreen);
         } else {
             console.log('setState not set');
         }

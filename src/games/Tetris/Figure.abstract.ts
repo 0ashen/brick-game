@@ -16,10 +16,12 @@ export type RotatePoss = 0 | 1 | 2 | 3;
 export abstract class Figure {
     private _pos: Position = { x: figureHorizontalStartPosition, y: 0 };
     private _rotate: RotatePoss = 0;
+    private _isDead: boolean = false;
 
     protected constructor(private _relief: Relief) {}
 
     public get relief(): Relief {
+        if (this._isDead) return [];
         return this.getReliefWithRotate(this._relief, this.rotate);
     }
 
@@ -117,5 +119,9 @@ export abstract class Figure {
                     break;
             }
         }
+    }
+
+    public markAsDead() {
+        this._isDead = true;
     }
 }

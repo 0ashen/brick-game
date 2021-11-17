@@ -10,25 +10,17 @@ export enum Buttons {
     Reset = 'Reset'
 }
 
-type Keys = {
-    [Buttons.Top]: string;
-    [Buttons.Right]: string;
-    [Buttons.Down]: string;
-    [Buttons.Left]: string;
-    [Buttons.Rotate]: string;
-    [Buttons.OnOff]: string;
-    [Buttons.StartPause]: string;
-    [Buttons.Sound]: string;
-    [Buttons.Reset]: string;
+type KeysMatch = {
+    [key in Buttons]: string;
 };
 
 type KeyBindings = {
-    [key in keyof Keys]: (() => void)[];
+    [key in keyof KeysMatch]: (() => void)[];
 };
 
 export class KeyController {
     private static instance: KeyController;
-    private keys: Keys = {
+    private keysMatch: KeysMatch = {
         [Buttons.Top]: 'ArrowUp',
         [Buttons.Right]: 'ArrowRight',
         [Buttons.Down]: 'ArrowDown',
@@ -42,16 +34,16 @@ export class KeyController {
     private keyBindings: KeyBindings;
 
     private constructor() {
-        this.keyBindings = (Object.keys(this.keys) as (keyof Keys)[]).reduce<KeyBindings>(
+        this.keyBindings = (Object.keys(this.keysMatch) as (keyof KeysMatch)[]).reduce<KeyBindings>(
             (acc: KeyBindings, key) => {
                 acc[key] = [];
                 return acc;
             },
             {} as KeyBindings
         );
-        const keys = this.keys;
+        const keys = this.keysMatch;
         document.onkeydown = ({ key: pressedKey }) => {
-            (Object.entries(this.keys) as Array<[keyof Keys, keyof typeof keys]>).forEach(
+            (Object.entries(this.keysMatch) as Array<[keyof KeysMatch, keyof typeof keys]>).forEach(
                 ([key, value]) => {
                     if (value === pressedKey) {
                         this.keyBindings[key].forEach((func) => func());

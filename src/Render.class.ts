@@ -41,9 +41,9 @@ export class Render {
         this.currentVisualizer.render(this._screen);
     }
 
-    public update(screen: Screen) {
+    public draw(screen: Screen) {
         if (_.isEqual(this._screen, screen)) return;
-        this._screen = screen;
+        this._screen = _.cloneDeep(screen);
         this.currentVisualizer.render(this._screen);
     }
 }

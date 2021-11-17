@@ -20,32 +20,32 @@ export const figureHorizontalStartPosition = 4;
 
 export class Tetris extends Game {
     private readonly figures: FiguresSet;
-    private currentFigure: Figure;
+    private currentFigure!: Figure;
     private screenHistory: Screen;
 
     constructor(render: Render, brickGame: BrickGame, keyController: KeyController) {
         super(render, brickGame, keyController);
         this.figures = [T, I, J, L, Q, S, Z];
-        this.currentFigure = this.randomizeFigure(this.figures);
+        this.refreshFigure();
         this.screenHistory = createEmptyScreen();
 
-        keyController.setHandler(Buttons.Left, this.moveFigure(Direction.Left));
-        keyController.setHandler(Buttons.Right, this.moveFigure(Direction.Right));
-        keyController.setHandler(Buttons.Down, this.moveFigure(Direction.Down));
-        keyController.setHandler(Buttons.Top, this.rotateFigure());
+        keyController.setHandler(Buttons.Left, this.handlerMoveFigure(Direction.Left));
+        keyController.setHandler(Buttons.Right, this.handlerMoveFigure(Direction.Right));
+        keyController.setHandler(Buttons.Down, this.handlerMoveFigure(Direction.Down));
+        keyController.setHandler(Buttons.Top, this.handlerRotateFigure());
     }
 
-    private moveFigure(to: Direction) {
+    private handlerMoveFigure(to: Direction) {
         return () => {
             this.currentFigure.moveTo(to, this.screenHistory);
-            this.updateScreen();
+            this.renderScreen();
         };
     }
 
-    private rotateFigure() {
+    private handlerRotateFigure() {
         return () => {
             this.currentFigure.makeRotate(this.screenHistory);
-            this.updateScreen();
+            this.renderScreen();
         };
     }
 
@@ -53,34 +53,36 @@ export class Tetris extends Game {
         this.render.start(this.screenHistory);
 
         while (true) {
-            this.updateScreen();
+            this.renderScreen();
 
             await sleep(500);
 
             if (this.currentFigure.canMoveTo(Direction.Down, this.screenHistory)) {
                 this.currentFigure.moveTo(Direction.Down, this.screenHistory);
             } else {
-                this.screenHistory = this.mapping(this.currentFigure, this.screenHistory);
-                this.currentFigure = this.randomizeFigure(this.figures);
+                this.screenHistory = this.mappingToScreen(this.currentFigure, this.screenHistory);
+                this.currentFigure.markAsDead();
+                await this.handleFullRows();
+                this.refreshFigure();
             }
         }
     }
 
-    private updateScreen(): void {
-        const resultScreen = this.mapping(this.currentFigure, this.screenHistory);
-        this.render.update(resultScreen);
+    private renderScreen(renderHistory?: boolean): void {
+        const resultScreen = this.mappingToScreen(this.currentFigure, this.screenHistory);
+        this.render.draw(resultScreen);
     }
 
-    private randomizeFigure(figures: FiguresSet): Figure {
-        const randomizeNumber = Number.parseInt((Math.random() * figures.length).toString());
-        return new figures[randomizeNumber]();
+    private refreshFigure(): void {
+        const randomizeNumber = Number.parseInt((Math.random() * this.figures.length).toString());
+        this.currentFigure = new this.figures[randomizeNumber]();
     }
 
-    private mapping(figure: Figure, screenHistory: Screen): Screen {
+    private mappingToScreen(figure: Figure, screenHistory: Screen): Screen {
         const screen = _.cloneDeep(screenHistory);
 
         for (const [x, y] of figure.relief) {
-            // if figure upper than screen, just don't mapping to screen
+            // if figure upper than screen, just don't mappingToScreen to screen
             if (figure.pos.y + y < 0) {
                 continue;
             }
@@ -88,5 +90,32 @@ export class Tetris extends Game {
         }
 
         return screen;
+    }
+
+    private async handleFullRows(): Promise<void> {
+        for (let y = 0; y < this.screenHistory.length; y++) {
+            const row = this.screenHistory[y];
+            if (row.every((el) => el == 1)) {
+                for (let i = 0; i <= 4; i++) {
+                    row[i + 5] = 0;
+                    row[4 - i] = 0;
+                    this.renderScreen();
+                    await sleep(70);
+                }
+            }
+        }
+        this.handleEmptyRows();
+    }
+
+    private handleEmptyRows(): void {
+        let hasPreviousRowBricks = false;
+        for (let y = 0; y < this.screenHistory.length; y++) {
+            if (this.screenHistory[y].every((el) => el == 0) && hasPreviousRowBricks) {
+                this.screenHistory.unshift(this.screenHistory.splice(y, 1)[0]);
+            } else {
+                hasPreviousRowBricks = true;
+            }
+        }
+        this.renderScreen();
     }
 }
