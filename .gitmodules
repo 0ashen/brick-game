@@ -2,3 +2,7 @@
 	path = brick-game
 	url = https://github.com/0ashen/brick-game
 	branch = github-pages
+[submodule "dist"]
+	path = dist
+	url = https://github.com/0ashen/brick-game
+	branch = github-pages
