@@ -19,7 +19,6 @@ type KeyBindings = {
 };
 
 export class KeyController {
-    private static instance: KeyController;
     private keysMatch: KeysMatch = {
         [Buttons.Top]: 'ArrowUp',
         [Buttons.Right]: 'ArrowRight',
@@ -33,7 +32,7 @@ export class KeyController {
     };
     private keyBindings: KeyBindings;
 
-    private constructor() {
+    constructor() {
         this.keyBindings = (Object.keys(this.keysMatch) as (keyof KeysMatch)[]).reduce<KeyBindings>(
             (acc: KeyBindings, key) => {
                 acc[key] = [];
@@ -55,12 +54,5 @@ export class KeyController {
 
     public setHandler(button: Buttons, func: () => void) {
         this.keyBindings[button].push(func);
-    }
-    public static getInstance(): KeyController {
-        if (!KeyController.instance) {
-            KeyController.instance = new KeyController();
-        }
-
-        return KeyController.instance;
     }
 }

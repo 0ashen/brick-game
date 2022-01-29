@@ -1,6 +1,6 @@
 import { Screen } from '../../Render.class';
 import _ from 'lodash';
-import { figureHorizontalStartPosition } from './Tetris.class';
+import { TetrisConfig } from './Tetris.class';
 
 type Position = { x: number; y: number };
 export type Relief = Array<[number, number]>;
@@ -14,7 +14,7 @@ export enum Direction {
 export type RotatePoss = 0 | 1 | 2 | 3;
 
 export abstract class Figure {
-    private _pos: Position = { x: figureHorizontalStartPosition, y: 0 };
+    private _pos: Position = { x: TetrisConfig.figureHorizStartPosition, y: 0 };
     private _rotate: RotatePoss = 0;
     private _isDead: boolean = false;
 

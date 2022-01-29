@@ -1,6 +1,8 @@
-import { Visualizer } from './visualizers/Visualizer.interface';
 import _ from 'lodash';
+import { injectable, injectAll } from 'tsyringe';
+import { Visualizer } from './visualizers/Visualizer.interface';
 import { createEmptyScreen } from './utils/createEmptyScreen';
+import { React } from './visualizers/React/React.class';
 
 type Pixel = 0 | 1;
 export type PixelRow = [Pixel, Pixel, Pixel, Pixel, Pixel, Pixel, Pixel, Pixel, Pixel, Pixel];
@@ -27,13 +29,14 @@ export type Screen = [
     PixelRow
 ];
 
+@injectable()
 export class Render {
     private _screen: Screen;
     private currentVisualizer: Visualizer;
 
-    constructor(private visualizers: Array<{ new (): Visualizer }>) {
+    constructor(@injectAll(React) visualizers: React /*React, SimpleRender*/[]) {
         this._screen = createEmptyScreen();
-        this.currentVisualizer = new visualizers[0]();
+        this.currentVisualizer = visualizers[0];
     }
 
     public start(screen: Screen) {

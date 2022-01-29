@@ -13,17 +13,25 @@ import { sleep } from '../../utils/sleep';
 import { createEmptyScreen } from '../../utils/createEmptyScreen';
 import { BrickGame } from '../../BrickGame.class';
 import { Buttons, KeyController } from '../../KeyController.class';
+import { delay, inject, injectable } from 'tsyringe';
 
 type FiguresSet = { new (): Figure }[];
 
-export const figureHorizontalStartPosition = 4;
+export const TetrisConfig = {
+    figureHorizStartPosition: 4
+};
 
+@injectable()
 export class Tetris extends Game {
     private readonly figures: FiguresSet;
     private currentFigure!: Figure;
     private screenHistory: Screen;
 
-    constructor(render: Render, brickGame: BrickGame, keyController: KeyController) {
+    constructor(
+        render: Render,
+        @inject(delay(() => BrickGame)) brickGame: BrickGame,
+        keyController: KeyController,
+    ) {
         super(render, brickGame, keyController);
         this.figures = [T, I, J, L, Q, S, Z];
         this.refreshFigure();
