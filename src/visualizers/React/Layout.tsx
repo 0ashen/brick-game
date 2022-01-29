@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Screen, PixelRow } from '../../Render.class';
+import { PixelRow, Screen } from '../../Render.class';
 import clsx from 'clsx';
 
 export type ScreenState = null | Screen;

@@ -14,16 +14,22 @@ export enum Direction {
 export type RotatePoss = 0 | 1 | 2 | 3;
 
 export abstract class Figure {
-    private _pos: Position = { x: TetrisConfig.figureHorizStartPosition, y: 0 };
-    private _rotate: RotatePoss = 0;
     private _isDead: boolean = false;
 
     protected constructor(private _relief: Relief) {}
+
+    private _pos: Position = { x: TetrisConfig.figureHorizStartPosition, y: 0 };
+
+    public get pos(): Position {
+        return this._pos;
+    }
 
     public get relief(): Relief {
         if (this._isDead) return [];
         return this.getReliefWithRotate(this._relief, this.rotate);
     }
+
+    private _rotate: RotatePoss = 0;
 
     protected get rotate(): RotatePoss {
         return this._rotate;
@@ -33,8 +39,13 @@ export abstract class Figure {
         this._rotate = newRotatePos;
     }
 
-    public get pos(): Position {
-        return this._pos;
+    protected get getNextRotatePos(): RotatePoss {
+        if (this.rotate === 0) return 1;
+        if (this.rotate === 1) return 2;
+        if (this.rotate === 2) return 3;
+        if (this.rotate === 3) return 0;
+        return 0;
+        // return this._rotate + 1 < 4 ? this._rotate + 1 : 0;
     }
 
     public canMoveTo(direction: Direction, screenHistory: Screen): boolean {
@@ -51,6 +62,44 @@ export abstract class Figure {
             const col = screenHistory[this.pos.y + y + yModificator];
             if (col === undefined) return false;
             const row = col[this.pos.x + x + xModificator];
+
+            if (row === undefined || row === 1) return false;
+        }
+
+        return true;
+    }
+
+    public makeRotate(screenHistory: Screen): void {
+        if (this.canRotate(screenHistory)) {
+            this.rotate = this.getNextRotatePos;
+        }
+    }
+
+    public moveTo(direction: Direction, screenHistory: Screen): void {
+        if (this.canMoveTo(direction, screenHistory)) {
+            switch (direction) {
+                case Direction.Down:
+                    this._pos.y++;
+                    break;
+                case Direction.Left:
+                    this._pos.x--;
+                    break;
+                case Direction.Right:
+                    this._pos.x++;
+                    break;
+            }
+        }
+    }
+
+    public markAsDead() {
+        this._isDead = true;
+    }
+
+    protected canRotate(screenHistory: Screen): boolean {
+        for (const [x, y] of this.getReliefWithRotate(this._relief, this.getNextRotatePos)) {
+            const col = screenHistory[this.pos.y + y];
+            if (col === undefined) return false;
+            const row = col[this.pos.x + x];
 
             if (row === undefined || row === 1) return false;
         }
@@ -76,52 +125,5 @@ export abstract class Figure {
 
             return [x, y];
         });
-    }
-
-    protected canRotate(screenHistory: Screen): boolean {
-        for (const [x, y] of this.getReliefWithRotate(this._relief, this.getNextRotatePos)) {
-            const col = screenHistory[this.pos.y + y];
-            if (col === undefined) return false;
-            const row = col[this.pos.x + x];
-
-            if (row === undefined || row === 1) return false;
-        }
-
-        return true;
-    }
-
-    public makeRotate(screenHistory: Screen): void {
-        if (this.canRotate(screenHistory)) {
-            this.rotate = this.getNextRotatePos;
-        }
-    }
-
-    protected get getNextRotatePos(): RotatePoss {
-        if (this.rotate === 0) return 1;
-        if (this.rotate === 1) return 2;
-        if (this.rotate === 2) return 3;
-        if (this.rotate === 3) return 0;
-        return 0;
-        // return this._rotate + 1 < 4 ? this._rotate + 1 : 0;
-    }
-
-    public moveTo(direction: Direction, screenHistory: Screen): void {
-        if (this.canMoveTo(direction, screenHistory)) {
-            switch (direction) {
-                case Direction.Down:
-                    this._pos.y++;
-                    break;
-                case Direction.Left:
-                    this._pos.x--;
-                    break;
-                case Direction.Right:
-                    this._pos.x++;
-                    break;
-            }
-        }
-    }
-
-    public markAsDead() {
-        this._isDead = true;
     }
 }

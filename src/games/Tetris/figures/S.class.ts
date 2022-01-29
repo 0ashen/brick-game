@@ -10,6 +10,7 @@ export class S extends Figure {
         ];
         super(relief);
     }
+
     protected get getNextRotatePos(): RotatePoss {
         if (this.rotate === 0) return 1;
         if (this.rotate === 1) return 0;

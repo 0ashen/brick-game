@@ -3,7 +3,9 @@ import { Screen } from '../../Render.class';
 import { initReact } from './InitReact';
 import { ScreenState } from './Layout';
 import _ from 'lodash';
+import { singleton } from 'tsyringe';
 
+@singleton()
 export class React extends Visualizer {
     private _setState?: React.Dispatch<React.SetStateAction<ScreenState>>;
     private lastScreen?: Screen;

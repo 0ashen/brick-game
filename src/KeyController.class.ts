@@ -1,3 +1,5 @@
+import { singleton } from 'tsyringe';
+
 export enum Buttons {
     Top = 'Top',
     Right = 'Right',
@@ -18,6 +20,7 @@ type KeyBindings = {
     [key in keyof KeysMatch]: (() => void)[];
 };
 
+@singleton()
 export class KeyController {
     private keysMatch: KeysMatch = {
         [Buttons.Top]: 'ArrowUp',

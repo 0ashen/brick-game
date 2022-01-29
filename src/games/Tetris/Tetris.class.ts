@@ -13,7 +13,7 @@ import { sleep } from '../../utils/sleep';
 import { createEmptyScreen } from '../../utils/createEmptyScreen';
 import { BrickGame } from '../../BrickGame.class';
 import { Buttons, KeyController } from '../../KeyController.class';
-import { delay, inject, injectable } from 'tsyringe';
+import { delay, inject, singleton } from 'tsyringe';
 
 type FiguresSet = { new (): Figure }[];
 
@@ -21,7 +21,7 @@ export const TetrisConfig = {
     figureHorizStartPosition: 4
 };
 
-@injectable()
+@singleton()
 export class Tetris extends Game {
     private readonly figures: FiguresSet;
     private currentFigure!: Figure;
@@ -30,7 +30,7 @@ export class Tetris extends Game {
     constructor(
         render: Render,
         @inject(delay(() => BrickGame)) brickGame: BrickGame,
-        keyController: KeyController,
+        keyController: KeyController
     ) {
         super(render, brickGame, keyController);
         this.figures = [T, I, J, L, Q, S, Z];
@@ -41,20 +41,6 @@ export class Tetris extends Game {
         keyController.setHandler(Buttons.Right, this.handlerMoveFigure(Direction.Right));
         keyController.setHandler(Buttons.Down, this.handlerMoveFigure(Direction.Down));
         keyController.setHandler(Buttons.Top, this.handlerRotateFigure());
-    }
-
-    private handlerMoveFigure(to: Direction) {
-        return () => {
-            this.currentFigure.moveTo(to, this.screenHistory);
-            this.renderScreen();
-        };
-    }
-
-    private handlerRotateFigure() {
-        return () => {
-            this.currentFigure.makeRotate(this.screenHistory);
-            this.renderScreen();
-        };
     }
 
     public async run(): Promise<void> {
@@ -74,6 +60,20 @@ export class Tetris extends Game {
                 this.refreshFigure();
             }
         }
+    }
+
+    private handlerMoveFigure(to: Direction) {
+        return () => {
+            this.currentFigure.moveTo(to, this.screenHistory);
+            this.renderScreen();
+        };
+    }
+
+    private handlerRotateFigure() {
+        return () => {
+            this.currentFigure.makeRotate(this.screenHistory);
+            this.renderScreen();
+        };
     }
 
     private renderScreen(renderHistory?: boolean): void {

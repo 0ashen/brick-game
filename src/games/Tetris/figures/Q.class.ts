@@ -11,6 +11,7 @@ export class Q extends Figure {
         ];
         super(relief);
     }
+
     protected canRotate(screenHistory: Screen): boolean {
         return false;
     }

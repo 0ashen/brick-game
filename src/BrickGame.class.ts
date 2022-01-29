@@ -1,14 +1,17 @@
 import { Render } from './Render.class';
-import { Game } from './games/Game.abstract';
-import { injectable, injectAll } from 'tsyringe';
-import { Tetris } from './games/Tetris/Tetris.class';
+import { Game, GameSignature } from './games/Game.abstract';
+import { container, inject, singleton } from 'tsyringe';
+import { RegisteredValues } from './RegisteredValues.enum';
 
-@injectable()
+@singleton()
 export class BrickGame {
     private selectedGame: Game;
 
-    constructor(private render: Render, @injectAll(Tetris) games: Tetris /*Tetris, Race*/[]) {
-        this.selectedGame = games[0];
+    constructor(
+        private render: Render,
+        @inject(RegisteredValues.Games) private games: GameSignature[]
+    ) {
+        this.selectedGame = container.resolve(this.games[0]);
     }
 
     public start() {
