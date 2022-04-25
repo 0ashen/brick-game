@@ -1,5 +1,5 @@
-import { Visualizer } from '../Visualizer.interface';
-import { Screen } from '../../Render.class';
+import { Visualizer } from '../../../../interfaces/Visualizer.interface';
+import { Screen } from '../../Render';
 import { initReact } from './InitReact';
 import { ScreenState } from './Layout';
 import _ from 'lodash';

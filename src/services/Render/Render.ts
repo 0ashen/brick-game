@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { container, inject, singleton } from 'tsyringe';
-import { Visualizer } from './visualizers/Visualizer.interface';
-import { createEmptyScreen } from './utils/createEmptyScreen';
-import { RegisteredValues } from './RegisteredValues.enum';
+import { Visualizer } from '../../interfaces/Visualizer.interface';
+import { createEmptyScreen } from '../../utils/createEmptyScreen';
+import { ModuleSet } from '../../ModuleSet.enum';
 import { DelayedConstructor } from 'tsyringe/dist/typings/lazy-helpers';
 
 type Pixel = 0 | 1;
@@ -36,7 +36,7 @@ export class Render {
     private currentVisualizer: Visualizer;
 
     constructor(
-        @inject(RegisteredValues.Visualizers) private visualizers: DelayedConstructor<Visualizer>[]
+        @inject(ModuleSet.Visualizers) private visualizers: DelayedConstructor<Visualizer>[]
     ) {
         this._screen = createEmptyScreen();
         this.currentVisualizer = container.resolve(visualizers[0]);

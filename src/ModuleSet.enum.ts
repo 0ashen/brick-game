@@ -1,4 +1,4 @@
-export enum RegisteredValues {
+export enum ModuleSet {
     Games = 'Games',
     Visualizers = 'Visualizers'
 }

@@ -1,4 +1,4 @@
-import { Screen } from '../../Render.class';
+import { Screen } from '../../services/Render/Render';
 import _ from 'lodash';
 import { TetrisConfig } from './Tetris.class';
 

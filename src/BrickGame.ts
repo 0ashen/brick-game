@@ -1,7 +1,7 @@
-import { Render } from './Render.class';
-import { Game, GameSignature } from './games/Game.abstract';
+import { Render } from './services/Render/Render';
+import { Game, GameSignature } from './interfaces/Game.abstract';
 import { container, inject, singleton } from 'tsyringe';
-import { RegisteredValues } from './RegisteredValues.enum';
+import { ModuleSet } from './ModuleSet.enum';
 
 @singleton()
 export class BrickGame {
@@ -9,7 +9,7 @@ export class BrickGame {
 
     constructor(
         private render: Render,
-        @inject(RegisteredValues.Games) private games: GameSignature[]
+        @inject(ModuleSet.Games) private games: GameSignature[]
     ) {
         this.selectedGame = container.resolve(this.games[0]);
     }

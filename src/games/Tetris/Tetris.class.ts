@@ -1,5 +1,5 @@
-import { Game } from '../Game.abstract';
-import { Render, Screen } from '../../Render.class';
+import { Game } from '../../interfaces/Game.abstract';
+import { Render, Screen } from '../../services/Render/Render';
 import _ from 'lodash';
 import { Direction, Figure } from './Figure.abstract';
 import { I } from './figures/I.class';
@@ -11,8 +11,8 @@ import { T } from './figures/T.class';
 import { Z } from './figures/Z.class';
 import { sleep } from '../../utils/sleep';
 import { createEmptyScreen } from '../../utils/createEmptyScreen';
-import { BrickGame } from '../../BrickGame.class';
-import { Buttons, KeyController } from '../../KeyController.class';
+import { BrickGame } from '../../BrickGame';
+import { KeyBindingsSlot, KeyboardBindings } from '../../services/KeyBindings';
 import { delay, inject, singleton } from 'tsyringe';
 
 type FiguresSet = { new (): Figure }[];
@@ -30,17 +30,17 @@ export class Tetris extends Game {
     constructor(
         render: Render,
         @inject(delay(() => BrickGame)) brickGame: BrickGame,
-        keyController: KeyController
+        keyController: KeyboardBindings
     ) {
         super(render, brickGame, keyController);
         this.figures = [T, I, J, L, Q, S, Z];
         this.refreshFigure();
         this.screenHistory = createEmptyScreen();
 
-        keyController.setHandler(Buttons.Left, this.handlerMoveFigure(Direction.Left));
-        keyController.setHandler(Buttons.Right, this.handlerMoveFigure(Direction.Right));
-        keyController.setHandler(Buttons.Down, this.handlerMoveFigure(Direction.Down));
-        keyController.setHandler(Buttons.Top, this.handlerRotateFigure());
+        keyController.setHandler(KeyBindingsSlot.Left, this.handlerMoveFigure(Direction.Left));
+        keyController.setHandler(KeyBindingsSlot.Right, this.handlerMoveFigure(Direction.Right));
+        keyController.setHandler(KeyBindingsSlot.Down, this.handlerMoveFigure(Direction.Down));
+        keyController.setHandler(KeyBindingsSlot.Top, this.handlerRotateFigure());
     }
 
     public async run(): Promise<void> {

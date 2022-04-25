@@ -1,5 +1,5 @@
 import { Figure, Relief } from '../Figure.abstract';
-import { Screen } from '../../../Render.class';
+import { Screen } from '../../../services/Render/Render';
 
 export class Q extends Figure {
     constructor() {
