@@ -1,0 +1,1 @@
+export { Tetris } from './tetris';

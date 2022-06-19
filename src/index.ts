@@ -1,25 +1,25 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
+import { Draw, Game } from '~/@types';
+import { cancelScrollOnPressArrows } from '~/utils';
 import '../public/style.scss';
-import { BrickGame } from './BrickGame';
-import { Race } from './games/Race/Race.class';
-import { Tetris } from './games/Tetris/Tetris.class';
-import { ModuleSet } from './ModuleSet.enum';
-import { SimpleRender } from './services/Render/visualizers/Simple.class';
-import { React } from './services/Render/visualizers/React/React.class';
-import { Visualizer } from './interfaces/Visualizer.interface';
-import { Game } from './interfaces/Game.abstract';
-import { depricateScrollOnPressArrow } from './utils/depricateScrollOnPressArrow';
+import { BrickGame } from './brick-game';
+import { Race, Tetris } from '~/games';
+import { Render } from '~/render';
 
-depricateScrollOnPressArrow();
+// prepare
+cancelScrollOnPressArrows();
 
-container.register<typeof Game[]>(ModuleSet.Games, {
-  useValue: [Tetris, Race]
-});
-container.register<typeof Visualizer[]>(ModuleSet.Visualizers, {
-  useValue: [React, SimpleRender]
-});
+container
+  .register<Draw>('Draw', Render)
+  .register<Array<Game>>('Game', {
+    useValue: [
+      container.resolve(Tetris),
+      container.resolve(Race),
+    ],
+  })
 
+// run
 const brickGame = container.resolve(BrickGame);
 
 brickGame.start();
