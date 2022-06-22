@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { TetrisConfig } from '../config';
-import { RenderPixelMatrix } from '~/render';
 
 type Position = { x: number; y: number };
 export type Relief = Array<[number, number]>;
@@ -50,7 +49,7 @@ export abstract class Figure {
   }
 
   // has collision
-  public canMoveTo(direction: Direction, screenHistory: RenderPixelMatrix): boolean {
+  public canMoveTo(direction: Direction, screenHistory: Array<Array<0 | 1>>): boolean {
     let xModificator = 0;
     xModificator += direction === Direction.Left ? -1 : 0;
     xModificator += direction === Direction.Right ? 1 : 0;
@@ -71,13 +70,13 @@ export abstract class Figure {
     return true;
   }
 
-  public makeRotate(screenHistory: RenderPixelMatrix): void {
+  public makeRotate(screenHistory: Array<Array<0 | 1>>): void {
     if (this.canRotate(screenHistory)) {
       this.rotate = this.getNextRotatePos;
     }
   }
 
-  public moveTo(direction: Direction, screenHistory: RenderPixelMatrix): void {
+  public moveTo(direction: Direction, screenHistory: Array<Array<0 | 1>>): void {
     if (this.canMoveTo(direction, screenHistory)) {
       switch (direction) {
         case Direction.Down:
@@ -97,7 +96,7 @@ export abstract class Figure {
     this._isDead = true;
   }
 
-  protected canRotate(screenHistory: RenderPixelMatrix): boolean {
+  protected canRotate(screenHistory: Array<Array<0 | 1>>): boolean {
     for (const [x, y] of this.getReliefWithRotate(this._relief, this.getNextRotatePos)) {
       const col = screenHistory[this.pos.y + y];
       if (col === undefined) return false;

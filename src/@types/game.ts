@@ -1,3 +1,3 @@
-export type Game = {
-  run: () => void | Promise<void>;
+export interface Game {
+  run(): void | Promise<void>;
 }

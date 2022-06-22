@@ -1,23 +1,26 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { Draw, Game } from '~/@types';
+import { Display, Game, KeyBindings } from '~/@types';
+import { DisplayService } from '~/display';
+import { KeyBindingsService } from '~/key-bindings';
+import { Race } from '~/race';
+import { Tetris } from '~/tetris';
 import { cancelScrollOnPressArrows } from '~/utils';
 import '../public/style.scss';
 import { BrickGame } from './brick-game';
-import { Race, Tetris } from '~/games';
-import { Render } from '~/render';
 
 // prepare
 cancelScrollOnPressArrows();
 
 container
-  .register<Draw>('Draw', Render)
-  .register<Array<Game>>('Game', {
+  .register<Display>('Display', DisplayService)
+  .register<KeyBindings>('Bindings', KeyBindingsService)
+  .register<Array<() => Game>>('GameList', {
     useValue: [
-      container.resolve(Tetris),
-      container.resolve(Race),
+      () => container.resolve(Tetris),
+      () => container.resolve(Race),
     ],
-  })
+  });
 
 // run
 const brickGame = container.resolve(BrickGame);

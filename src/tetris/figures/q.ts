@@ -1,5 +1,4 @@
 import { Figure, Relief } from '../types';
-import { RenderPixelMatrix } from '~/render';
 
 export class Q extends Figure {
   constructor() {
@@ -12,7 +11,7 @@ export class Q extends Figure {
     super(relief);
   }
 
-  protected canRotate(screenHistory: RenderPixelMatrix): boolean {
+  protected canRotate(screenHistory: Array<Array<0 | 1>>): boolean {
     return false;
   }
 }

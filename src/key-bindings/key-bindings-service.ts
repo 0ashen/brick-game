@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
-import { KeyBindingsSlot } from './';
+import { KeyBindings, KeyBindingsSlot } from '~/@types';
 import { KeyBindingsBindedButton, KeyBindingsHandler } from './types';
 
 @singleton()
-export class KeyBindings {
+export class KeyBindingsService implements KeyBindings {
   private mapSlot2Key: Record<KeyBindingsSlot, KeyBindingsBindedButton> = {
     [KeyBindingsSlot.Top]: 'ArrowUp',
     [KeyBindingsSlot.Right]: 'ArrowRight',
@@ -38,7 +38,7 @@ export class KeyBindings {
     };
   }
 
-  public setHandler(button: KeyBindingsSlot, handler: KeyBindingsHandler) {
+  public bind(button: KeyBindingsSlot, handler: KeyBindingsHandler) {
     this.mapSlot2Handler[button].push(handler);
   }
 }

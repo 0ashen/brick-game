@@ -1,2 +1,1 @@
-export { KeyBindings } from './key-bindings'
-export { KeyBindingsSlot } from './key-bindings-slot';
+export { KeyBindingsService } from './key-bindings-service'

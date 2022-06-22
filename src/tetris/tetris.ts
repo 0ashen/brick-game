@@ -1,30 +1,30 @@
 import _ from 'lodash';
 import { inject, singleton } from 'tsyringe';
-import { Draw, Game } from '~/@types';
-import { KeyBindings, KeyBindingsSlot } from '~/key-bindings';
-import { RenderPixelMatrix } from '~/render';
+import { Display, Game, KeyBindings, KeyBindingsSlot } from '~/@types';
 import { cookEmptyScreen, sleep } from '~/utils';
 import { I, J, L, Q, S, T, Z } from './figures';
 import { Direction, Figure } from './types';
 
 @singleton()
 export class Tetris implements Game {
-  private readonly figures: Array<new () => Figure> = [T, I, J, L, Q, S, Z];
   private currentFigure!: Figure;
-  private screenHistory: RenderPixelMatrix;
+  private screenHistory: Array<Array<0 | 1>> = cookEmptyScreen();
+  private readonly figures: Array<new () => Figure> = [T, I, J, L, Q, S, Z];
 
-  constructor(@inject('Draw') private render: Draw, private keyBindings: KeyBindings) {
+  constructor(
+    @inject('Display') private renderService: Display,
+    @inject('Bindings') private keyBindService: KeyBindings,
+  ) {
     this.refreshFigure();
-    this.screenHistory = cookEmptyScreen();
 
-    this.keyBindings.setHandler(KeyBindingsSlot.Left, this.handlerMoveFigure(Direction.Left));
-    this.keyBindings.setHandler(KeyBindingsSlot.Right, this.handlerMoveFigure(Direction.Right));
-    this.keyBindings.setHandler(KeyBindingsSlot.Down, this.handlerMoveFigure(Direction.Down));
-    this.keyBindings.setHandler(KeyBindingsSlot.Top, this.handlerRotateFigure());
+    this.keyBindService.bind(KeyBindingsSlot.Left, this.handlerMoveFigure(Direction.Left));
+    this.keyBindService.bind(KeyBindingsSlot.Right, this.handlerMoveFigure(Direction.Right));
+    this.keyBindService.bind(KeyBindingsSlot.Down, this.handlerMoveFigure(Direction.Down));
+    this.keyBindService.bind(KeyBindingsSlot.Top, this.handlerRotateFigure());
   }
 
   public async run(): Promise<void> {
-    this.render.draw(this.screenHistory);
+    this.renderService.draw(this.screenHistory);
 
     while (true) {
       this.renderScreen();
@@ -58,7 +58,7 @@ export class Tetris implements Game {
 
   private renderScreen(renderHistory?: boolean): void {
     const resultScreen = this.mappingToScreen(this.currentFigure, this.screenHistory);
-    this.render.draw(resultScreen);
+    this.renderService.draw(resultScreen);
   }
 
   private refreshFigure(): void {
@@ -66,7 +66,7 @@ export class Tetris implements Game {
     this.currentFigure = new this.figures[randomizeNumber]();
   }
 
-  private mappingToScreen(figure: Figure, screenHistory: RenderPixelMatrix): RenderPixelMatrix {
+  private mappingToScreen(figure: Figure, screenHistory: Array<Array<0 | 1>>): Array<Array<0 | 1>> {
     const screen = _.cloneDeep(screenHistory);
 
     for (const [x, y] of figure.relief) {
@@ -107,3 +107,4 @@ export class Tetris implements Game {
     this.renderScreen();
   }
 }
+

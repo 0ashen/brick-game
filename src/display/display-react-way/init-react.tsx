@@ -1,12 +1,12 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { RenderPixelMatrix, RenderPixelRow } from '../../types';
+import { DisplayRenderPixelScreenMatrix } from '../types';
 import clsx from 'clsx';
 
-export type ScreenState = null | RenderPixelMatrix;
+export type ScreenState = null | DisplayRenderPixelScreenMatrix;
 
 export const Layout = (
-  setToClass: (hookDispatch: React.Dispatch<React.SetStateAction<ScreenState>>) => void,
+  setUpdateStateToClass: (hookDispatch: React.Dispatch<React.SetStateAction<ScreenState>>) => void,
 ) => {
   return () => {
     const [state, setState] = useState<ScreenState>(null);
@@ -15,7 +15,7 @@ export const Layout = (
       setState(state);
     };
     useEffect(() => {
-      setToClass(updateState);
+      setUpdateStateToClass(updateState);
     }, [setState]);
     return (
       <>
@@ -26,7 +26,7 @@ export const Layout = (
     );
   };
 };
-const RenderRow = ({ row }: { row: RenderPixelRow }) => {
+const RenderRow = ({ row }: { row: Array<0 | 1> }) => {
   return (
     <>
       {row.map((el, idx) => (
@@ -39,6 +39,7 @@ const RenderRow = ({ row }: { row: RenderPixelRow }) => {
 export function initReact(
   setToClass: (hookDispatch: React.Dispatch<React.SetStateAction<ScreenState>>) => void,
 ) {
+
   const Template = Layout(setToClass);
   ReactDOM.render(<Template/>, document.querySelector('#app .container'));
 }
