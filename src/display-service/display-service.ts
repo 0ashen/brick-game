@@ -16,12 +16,12 @@ export class DisplayService implements Display {
 
   private currentRenderMethod: DisplayRenderWay = container.resolve(this.renderMethodList[0]);
 
-  public draw(newScreen: DisplayMatrix20x10) {
-    if (this.screen === newScreen) {
-      console.log('this.screen === newScreen // true')
+  public drawMatrix(matrix: DisplayMatrix20x10) {
+    if (this.screen === matrix) {
       return;
     }
-    this.screen = newScreen;
-    this.currentRenderMethod.draw(this.screen);
+    this.screen = matrix;
+    this.currentRenderMethod.drawMatrix(this.screen);
   }
+
 }

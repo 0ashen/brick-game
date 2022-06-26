@@ -15,7 +15,7 @@ import { TetrisDirection } from './types';
 @singleton()
 export class Tetris implements Game {
   private currentFigure: TetrisFigureAbstract = new TetrisFigureI();
-
+  // 100 300 700 1500
   private displayMatrix: DisplayMatrix20x10 = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -62,7 +62,7 @@ export class Tetris implements Game {
   }
 
   public async run(): Promise<void> {
-    this.displayService.draw(this.displayMatrix);
+    this.displayService.drawMatrix(this.displayMatrix);
 
     while (true) {
       this.renderMatrixWithFigure();
@@ -214,12 +214,12 @@ export class Tetris implements Game {
   }
 
   private renderMatrix(): void {
-    this.displayService.draw(this.displayMatrix);
+    this.displayService.drawMatrix(this.displayMatrix);
   }
 
   private renderMatrixWithFigure(): void {
     const resultScreen = this.figureMap2Matrix();
-    this.displayService.draw(resultScreen);
+    this.displayService.drawMatrix(resultScreen);
   }
 
   private timeout(time: number): Promise<void> {

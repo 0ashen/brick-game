@@ -1,9 +1,19 @@
+@font-face {
+  font-family: 'Ticking Timebomb BB';
+  src: url('./ticking-timebomb-bb.woff2') format('woff2'),
+  url('./ticking-timebomb-bb.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 html,
 body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
+  color: #312F30;
 }
 
 body {
@@ -18,6 +28,7 @@ body {
   position: relative;
   width: 335px;
   width: 670px;
+
   svg {
     width: 100%;
   }
@@ -39,6 +50,18 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
+  }
+
+  .score {
+    font-family: 'Ticking Timebomb BB';
+    position: absolute;
+    left: 108%;
+    top: 0;
+    font-size: 27px;
+    @media screen and (max-width: 687px) {
+      font-size: 4.116vw;
+
+    }
   }
 }
 
