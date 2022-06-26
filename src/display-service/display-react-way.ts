@@ -2,8 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 import { singleton } from 'tsyringe';
 import { DisplayMatrix20x10 } from '~/@types';
-import { DisplayRenderWay } from '../types';
-import { initReact, ScreenState } from './init-react';
+import { DisplayRenderWay } from './types';
+import { displayReactWayInitReact, ScreenState } from './display-react-way-init-react';
 
 @singleton()
 export class DisplayReactWay implements DisplayRenderWay {
@@ -11,7 +11,7 @@ export class DisplayReactWay implements DisplayRenderWay {
   private lastScreen?: DisplayMatrix20x10;
 
   constructor() {
-    initReact(this.hookDispatch);
+    displayReactWayInitReact(this.hookDispatch);
   }
 
   public draw(screen: DisplayMatrix20x10): void {

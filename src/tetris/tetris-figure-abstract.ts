@@ -10,22 +10,16 @@ export abstract class TetrisFigureAbstract {
     this.getRandomRotateDirection();
   }
 
-  public getShape(): TetrisShape {
-    return this.getShapeWithRotate(this.rotate)
-  }
-
   public doRotate(): void {
     this.rotate = this.getNextRotateDirection();
   }
 
-  public getShapeWithNextRotate(): TetrisShape {
-    return this.getShapeWithRotate(this.getNextRotateDirection())
+  public getShape(): TetrisShape {
+    return this.getShapeWithRotate(this.rotate)
   }
 
-  protected getRandomRotateDirection() {
-    return Array.from({ length: Math.round(Math.random() * 3.49) }).forEach((_) => {
-      this.doRotate();
-    })
+  public getShapeWithNextRotate(): TetrisShape {
+    return this.getShapeWithRotate(this.getNextRotateDirection())
   }
 
   protected getNextRotateDirection(): TetrisRotateDirection {
@@ -34,6 +28,12 @@ export abstract class TetrisFigureAbstract {
     if (this.rotate === 2) return 3;
     if (this.rotate === 3) return 0;
     return 0;
+  }
+
+  protected getRandomRotateDirection() {
+    return Array.from({ length: Math.round(Math.random() * 3.49) }).forEach((_) => {
+      this.doRotate();
+    })
   }
 
   private getShapeWithRotate(rotate: TetrisRotateDirection): TetrisShape {

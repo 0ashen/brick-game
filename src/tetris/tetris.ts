@@ -15,6 +15,7 @@ import { TetrisDirection } from './types';
 @singleton()
 export class Tetris implements Game {
   private currentFigure: TetrisFigureAbstract = new TetrisFigureI();
+
   private displayMatrix: DisplayMatrix20x10 = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -32,12 +33,21 @@ export class Tetris implements Game {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
   ] as unknown as DisplayMatrix20x10;
-  private readonly figures: Array<new () => TetrisFigureAbstract> = [TetrisFigureT, TetrisFigureI, TetrisFigureJ, TetrisFigureL, TetrisFigureQ, TetrisFigureS, TetrisFigureZ];
+
+  private readonly figures: Array<new () => TetrisFigureAbstract> = [
+    TetrisFigureT,
+    TetrisFigureI,
+    TetrisFigureJ,
+    TetrisFigureL,
+    TetrisFigureQ,
+    TetrisFigureS,
+    TetrisFigureZ,
+  ];
 
   constructor(
     @inject('Display') private displayService: Display,
@@ -62,26 +72,11 @@ export class Tetris implements Game {
       if (this.figureCanMove(TetrisDirection.Down)) {
         this.figureMove(TetrisDirection.Down);
       } else {
-        this.displayMatrix = this.mappingToScreen();
-        // this.currentFigure.markAsDead();
+        this.displayMatrix = this.figureMap2Matrix();
         await this.removeFullRows();
         await this.removeEmptyRows();
         this.refreshFigure();
       }
-    }
-  }
-
-  private figureMove(to: TetrisDirection): void {
-    switch (to) {
-      case TetrisDirection.Down:
-        this.currentFigure.offset.y++;
-        break;
-      case TetrisDirection.Left:
-        this.currentFigure.offset.x--;
-        break;
-      case TetrisDirection.Right:
-        this.currentFigure.offset.x++;
-        break;
     }
   }
 
@@ -134,6 +129,34 @@ export class Tetris implements Game {
     return true;
   }
 
+  private figureMap2Matrix(): DisplayMatrix20x10 {
+    const screen = _.cloneDeep(this.displayMatrix);
+
+    for (const [x, y] of this.currentFigure.getShape()) {
+      // if figure upper than screen, don't mapping to screen
+      if (this.currentFigure.offset.y + y < 0) {
+        continue;
+      }
+      screen[this.currentFigure.offset.y + y][this.currentFigure.offset.x + x] = 1;
+    }
+
+    return screen;
+  }
+
+  private figureMove(to: TetrisDirection): void {
+    switch (to) {
+      case TetrisDirection.Down:
+        this.currentFigure.offset.y++;
+        break;
+      case TetrisDirection.Left:
+        this.currentFigure.offset.x--;
+        break;
+      case TetrisDirection.Right:
+        this.currentFigure.offset.x++;
+        break;
+    }
+  }
+
   private handleFigureMove(to: TetrisDirection) {
     return () => {
       if (this.figureCanMove(to)) {
@@ -150,32 +173,27 @@ export class Tetris implements Game {
     }
   }
 
-  private renderMatrixWithFigure(): void {
-    const resultScreen = this.mappingToScreen();
-    this.displayService.draw(resultScreen);
-  }
-
-  private renderMatrix(): void {
-    this.displayService.draw(this.displayMatrix);
-  }
-
   private refreshFigure(): void {
     const randomizeNumber = Math.round(Math.random() * (this.figures.length - 1));
     this.currentFigure = new this.figures[randomizeNumber]();
   }
 
-  private mappingToScreen(): DisplayMatrix20x10 {
-    const screen = _.cloneDeep(this.displayMatrix);
-
-    for (const [x, y] of this.currentFigure.getShape()) {
-      // if figure upper than screen, don't mapping to screen
-      if (this.currentFigure.offset.y + y < 0) {
-        continue;
+  private async removeEmptyRows(): Promise<void> {
+    let hasActivePixelInPreviousRows = false;
+    const matrix = _.cloneDeep(this.displayMatrix);
+    for (let y = 0; y < matrix.length; y++) {
+      const hasntActivePixelInTheRow = matrix[y].every((el) => el == 0);
+      if (hasntActivePixelInTheRow && hasActivePixelInPreviousRows) {
+        // cut the row and paste in begin of screen
+        matrix.unshift(matrix.splice(y, 1)[0]);
+        this.displayMatrix = _.cloneDeep(matrix);
+        this.renderMatrix();
+        await this.timeout(tetrisConfig.animDelayAfterRemove1FullRow);
       }
-      screen[this.currentFigure.offset.y + y][this.currentFigure.offset.x + x] = 1;
+      if (!hasntActivePixelInTheRow) {
+        hasActivePixelInPreviousRows = true;
+      }
     }
-
-    return screen;
   }
 
   private async removeFullRows(): Promise<void> {
@@ -195,22 +213,13 @@ export class Tetris implements Game {
     }
   }
 
-  private async removeEmptyRows(): Promise<void> {
-    let hasActivePixelInPreviousRows = false;
-    const matrix = _.cloneDeep(this.displayMatrix);
-    for (let y = 0; y < matrix.length; y++) {
-      const hasntActivePixelInTheRow = matrix[y].every((el) => el == 0);
-      if (hasntActivePixelInTheRow && hasActivePixelInPreviousRows) {
-        // cut the row and paste in begin of screen
-        matrix.unshift(matrix.splice(y, 1)[0]);
-        this.displayMatrix = _.cloneDeep(matrix);
-        this.renderMatrix();
-        await this.timeout(tetrisConfig.animDelayAfterRemove1FullRow);
-      }
-      if (!hasntActivePixelInTheRow) {
-        hasActivePixelInPreviousRows = true;
-      }
-    }
+  private renderMatrix(): void {
+    this.displayService.draw(this.displayMatrix);
+  }
+
+  private renderMatrixWithFigure(): void {
+    const resultScreen = this.figureMap2Matrix();
+    this.displayService.draw(resultScreen);
   }
 
   private timeout(time: number): Promise<void> {

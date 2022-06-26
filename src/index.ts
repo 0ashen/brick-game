@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
 import { Display, Game, KeyBind } from '~/@types';
-import { DisplayService } from '~/display';
-import { KeyBindService } from '~/key-bind';
+import { DisplayService } from '~/display-service';
+import { KeyBindService } from '~/key-bind-service';
 import { Race } from '~/race';
 import { Tetris } from '~/tetris';
 import { cancelScrollOnPressArrows } from '~/utils';

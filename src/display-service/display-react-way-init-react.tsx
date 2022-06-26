@@ -18,11 +18,11 @@ export const Layout = (
       setUpdateStateToClass(updateState);
     }, [setState]);
     return (
-      <>
+      <div className={'container'}>
         {state?.map((el, idx) => (
           <RenderRow row={el} key={idx}/>
         ))}
-      </>
+      </div>
     );
   };
 };
@@ -36,10 +36,10 @@ const RenderRow = ({ row }: { row: Array<0 | 1> }) => {
   );
 };
 
-export function initReact(
+export function displayReactWayInitReact(
   setToClass: (hookDispatch: React.Dispatch<React.SetStateAction<ScreenState>>) => void,
 ) {
 
   const Template = Layout(setToClass);
-  ReactDOM.render(<Template/>, document.querySelector('#app .container'));
+  ReactDOM.render(<Template/>, document.querySelector('#app'));
 }
