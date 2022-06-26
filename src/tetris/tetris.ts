@@ -40,7 +40,7 @@ export class Tetris implements Game {
   private readonly figures: Array<new () => TetrisFigureAbstract> = [TetrisFigureT, TetrisFigureI, TetrisFigureJ, TetrisFigureL, TetrisFigureQ, TetrisFigureS, TetrisFigureZ];
 
   constructor(
-    @inject('Display') private renderService: Display,
+    @inject('Display') private displayService: Display,
     @inject('Bindings') private keyBindService: KeyBind,
   ) {
     // this.refreshFigure();
@@ -52,14 +52,14 @@ export class Tetris implements Game {
   }
 
   public async run(): Promise<void> {
-    this.renderService.draw(this.displayMatrix);
+    this.displayService.draw(this.displayMatrix);
 
     while (true) {
       this.renderMatrixWithFigure();
 
       await this.timeout(tetrisConfig.animDelayGameTic);
 
-      if (this.canFigureMove(TetrisDirection.Down)) {
+      if (this.figureCanMove(TetrisDirection.Down)) {
         this.figureMove(TetrisDirection.Down);
       } else {
         this.displayMatrix = this.mappingToScreen();
@@ -72,29 +72,27 @@ export class Tetris implements Game {
   }
 
   private figureMove(to: TetrisDirection): void {
-    if (this.canFigureMove(to)) {
-      switch (to) {
-        case TetrisDirection.Down:
-          this.currentFigure.offset.y++;
-          break;
-        case TetrisDirection.Left:
-          this.currentFigure.offset.x--;
-          break;
-        case TetrisDirection.Right:
-          this.currentFigure.offset.x++;
-          break;
-      }
+    switch (to) {
+      case TetrisDirection.Down:
+        this.currentFigure.offset.y++;
+        break;
+      case TetrisDirection.Left:
+        this.currentFigure.offset.x--;
+        break;
+      case TetrisDirection.Right:
+        this.currentFigure.offset.x++;
+        break;
     }
   }
 
   // has collision
-  private canFigureMove(to: TetrisDirection): boolean {
+  private figureCanMove(to: TetrisDirection): boolean {
     let xOffset = 0;
     xOffset += to === TetrisDirection.Left ? -1 : 0;
     xOffset += to === TetrisDirection.Right ? 1 : 0;
     const yOffset = to === TetrisDirection.Down ? 1 : 0;
 
-    for (const [x, y] of this.currentFigure.getPosition()) {
+    for (const [x, y] of this.currentFigure.getShape()) {
       // skip, if figure shape pixel upper than screen
       if (this.currentFigure.offset.y + y + yOffset < 0) {
         continue;
@@ -115,25 +113,50 @@ export class Tetris implements Game {
     return true;
   }
 
+  private figureCanRotate(): boolean {
+    for (const [x, y] of this.currentFigure.getShapeWithNextRotate()) {
+      // skip, if figure upper than screen
+      if (this.currentFigure.offset.y + y < 0) {
+        continue;
+      }
+
+      const col = this.displayMatrix[this.currentFigure.offset.y + y];
+      if (col === undefined) {
+        return false;
+      }
+      const row = col[this.currentFigure.offset.x + x];
+
+      if (row === undefined || row === 1) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   private handleFigureMove(to: TetrisDirection) {
     return () => {
-      this.figureMove(to);
-      this.renderMatrixWithFigure();
+      if (this.figureCanMove(to)) {
+        this.figureMove(to);
+        this.renderMatrixWithFigure();
+      }
     };
   }
 
   private handleFigureRotate = () => {
-    this.currentFigure.makeRotate(this.displayMatrix);
-    this.renderMatrixWithFigure();
+    if (this.figureCanRotate()) {
+      this.currentFigure.doRotate();
+      this.renderMatrixWithFigure();
+    }
   }
 
   private renderMatrixWithFigure(): void {
     const resultScreen = this.mappingToScreen();
-    this.renderService.draw(resultScreen);
+    this.displayService.draw(resultScreen);
   }
 
   private renderMatrix(): void {
-    this.renderService.draw(this.displayMatrix);
+    this.displayService.draw(this.displayMatrix);
   }
 
   private refreshFigure(): void {
@@ -144,7 +167,7 @@ export class Tetris implements Game {
   private mappingToScreen(): DisplayMatrix20x10 {
     const screen = _.cloneDeep(this.displayMatrix);
 
-    for (const [x, y] of this.currentFigure.getPosition()) {
+    for (const [x, y] of this.currentFigure.getShape()) {
       // if figure upper than screen, don't mapping to screen
       if (this.currentFigure.offset.y + y < 0) {
         continue;

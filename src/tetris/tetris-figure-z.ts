@@ -1,5 +1,5 @@
 import { TetrisFigureAbstract } from './tetris-figure-abstract';
-import { TetrisRotatePoss, TetrisShape } from './types';
+import { TetrisRotateDirection, TetrisShape } from './types';
 
 export class TetrisFigureZ extends TetrisFigureAbstract {
   constructor() {
@@ -12,7 +12,7 @@ export class TetrisFigureZ extends TetrisFigureAbstract {
     super(relief);
   }
 
-  protected getNextRotatePos(): TetrisRotatePoss {
+  protected getNextRotateDirection(): TetrisRotateDirection {
     if (this.rotate === 0) return 1;
     if (this.rotate === 1) return 0;
     return 0;

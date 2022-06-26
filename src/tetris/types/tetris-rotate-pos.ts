@@ -1,1 +1,1 @@
-export type TetrisRotatePoss = 0 | 1 | 2 | 3;
+export type TetrisRotateDirection = 0 | 1 | 2 | 3;

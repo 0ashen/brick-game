@@ -1,26 +1,34 @@
-import { DisplayMatrix20x10 } from '~/@types';
-import { TetrisMargin, TetrisRotatePoss, TetrisShape } from './types';
+import { TetrisMargin, TetrisRotateDirection, TetrisShape } from './types';
 
 export abstract class TetrisFigureAbstract {
   public offset: TetrisMargin = { x: 4, y: 0 };
-  protected rotate: TetrisRotatePoss = Math.round(Math.random() * 3.49) as TetrisRotatePoss;
+  protected rotate!: TetrisRotateDirection;
 
   protected constructor(
     protected shape: TetrisShape,
   ) {
+    this.getRandomRotateDirection();
   }
 
-  public getPosition(): TetrisShape {
-    return this.getShapeWithRotate(this.shape, this.rotate);
+  public getShape(): TetrisShape {
+    return this.getShapeWithRotate(this.rotate)
   }
 
-  public makeRotate(screenHistory: DisplayMatrix20x10): void {
-    if (this.canRotate(screenHistory)) {
-      this.rotate = this.getNextRotatePos();
-    }
+  public doRotate(): void {
+    this.rotate = this.getNextRotateDirection();
   }
 
-  protected getNextRotatePos(): TetrisRotatePoss {
+  public getShapeWithNextRotate(): TetrisShape {
+    return this.getShapeWithRotate(this.getNextRotateDirection())
+  }
+
+  protected getRandomRotateDirection() {
+    return Array.from({ length: Math.round(Math.random() * 3.49) }).forEach((_) => {
+      this.doRotate();
+    })
+  }
+
+  protected getNextRotateDirection(): TetrisRotateDirection {
     if (this.rotate === 0) return 1;
     if (this.rotate === 1) return 2;
     if (this.rotate === 2) return 3;
@@ -28,39 +36,18 @@ export abstract class TetrisFigureAbstract {
     return 0;
   }
 
-  protected canRotate(screen: Array<Array<0 | 1>>): boolean {
-    for (const [x, y] of this.getShapeWithRotate(this.shape, this.getNextRotatePos())) {
-      // skip, if figure upper than screen
-      if (this.offset.y + y < 0) {
-        continue;
-      }
+  private getShapeWithRotate(rotate: TetrisRotateDirection): TetrisShape {
 
-      const col = screen[this.offset.y + y];
-      if (col === undefined) {
-        return false;
-      }
-      const row = col[this.offset.x + x];
+    if (rotate === 0) return this.shape;
 
-      if (row === undefined || row === 1) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  protected getShapeWithRotate(relief: TetrisShape, nextRotatePos: TetrisRotatePoss): TetrisShape {
-
-    if (nextRotatePos === 0) return relief;
-
-    return relief.map(([x, y]) => {
-      if (nextRotatePos === 1) {
+    return this.shape.map(([x, y]) => {
+      if (rotate === 1) {
         return [y * -1, x];
       }
-      if (nextRotatePos === 2) {
+      if (rotate === 2) {
         return [x * -1, y * -1];
       }
-      if (nextRotatePos === 3) {
+      if (rotate === 3) {
         return [y, x * -1];
       }
 
