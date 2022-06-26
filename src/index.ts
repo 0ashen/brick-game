@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { Display, Game, KeyBindings } from '~/@types';
+import { Display, Game, KeyBind } from '~/@types';
 import { DisplayService } from '~/display';
-import { KeyBindingsService } from '~/key-bindings';
+import { KeyBindService } from '~/key-bind';
 import { Race } from '~/race';
 import { Tetris } from '~/tetris';
 import { cancelScrollOnPressArrows } from '~/utils';
@@ -14,7 +14,7 @@ cancelScrollOnPressArrows();
 
 container
   .register<Display>('Display', DisplayService)
-  .register<KeyBindings>('Bindings', KeyBindingsService)
+  .register<KeyBind>('Bindings', KeyBindService)
   .register<Array<() => Game>>('GameList', {
     useValue: [
       () => container.resolve(Tetris),

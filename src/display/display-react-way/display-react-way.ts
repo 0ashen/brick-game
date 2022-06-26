@@ -1,19 +1,20 @@
-import { DisplayRenderWay, DisplayRenderPixelScreenMatrix } from '../types';
-import { initReact, ScreenState } from './init-react';
 import _ from 'lodash';
-import { singleton } from 'tsyringe';
 import React from 'react';
+import { singleton } from 'tsyringe';
+import { DisplayMatrix20x10 } from '~/@types';
+import { DisplayRenderWay } from '../types';
+import { initReact, ScreenState } from './init-react';
 
 @singleton()
 export class DisplayReactWay implements DisplayRenderWay {
   private _setState?: React.Dispatch<React.SetStateAction<ScreenState>>;
-  private lastScreen?: DisplayRenderPixelScreenMatrix;
+  private lastScreen?: DisplayMatrix20x10;
 
   constructor() {
     initReact(this.hookDispatch);
   }
 
-  public draw(screen: DisplayRenderPixelScreenMatrix): void {
+  public draw(screen: DisplayMatrix20x10): void {
     this.lastScreen = _.cloneDeep(screen);
     if (this._setState) {
       this._setState(this.lastScreen);

@@ -1,9 +1,9 @@
+import clsx from 'clsx';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { DisplayRenderPixelScreenMatrix } from '../types';
-import clsx from 'clsx';
+import { DisplayMatrix20x10 } from '~/@types';
 
-export type ScreenState = null | DisplayRenderPixelScreenMatrix;
+export type ScreenState = null | DisplayMatrix20x10;
 
 export const Layout = (
   setUpdateStateToClass: (hookDispatch: React.Dispatch<React.SetStateAction<ScreenState>>) => void,

@@ -1,4 +1,4 @@
-export enum KeyBindingsSlot {
+export enum KeyBindSlot {
   Top = 'Top',
   Right = 'Right',
   Down = 'Down',

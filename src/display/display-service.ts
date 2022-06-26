@@ -1,13 +1,13 @@
 import { container, singleton } from 'tsyringe';
-import { Display } from '~/@types';
+import { Display, DisplayMatrix20x10 } from '~/@types';
 import { cookEmptyScreen } from '~/utils';
 import { DisplayReactWay } from './display-react-way';
 import { DisplaySimpleWay } from './display-simple-way';
-import { DisplayRenderPixelScreenMatrix, DisplayRenderWay } from './types';
+import { DisplayRenderWay } from './types';
 
 @singleton()
 export class DisplayService implements Display {
-  private screen: Array<Array<0 | 1>> = cookEmptyScreen();
+  private screen: DisplayMatrix20x10 = cookEmptyScreen();
 
   private renderMethodList: Array<new() => DisplayRenderWay> = [
     DisplayReactWay,
@@ -16,8 +16,11 @@ export class DisplayService implements Display {
 
   private currentRenderMethod: DisplayRenderWay = container.resolve(this.renderMethodList[0]);
 
-  public draw(newScreen: DisplayRenderPixelScreenMatrix) {
-    if (this.screen === newScreen) return;
+  public draw(newScreen: DisplayMatrix20x10) {
+    if (this.screen === newScreen) {
+      console.log('this.screen === newScreen // true')
+      return;
+    }
     this.screen = newScreen;
     this.currentRenderMethod.draw(this.screen);
   }

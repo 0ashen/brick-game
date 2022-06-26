@@ -1,11 +1,11 @@
 import { inject, injectable } from 'tsyringe';
-import { Display, Game, KeyBindings } from '~/@types';
+import { Display, Game, KeyBind } from '~/@types';
 
 @injectable()
 export class Race implements Game {
   constructor(
     @inject('Display') private renderService: Display,
-    @inject('Bindings') private keyBindService: KeyBindings,
+    @inject('Bindings') private keyBindService: KeyBind,
   ) {
   }
 
