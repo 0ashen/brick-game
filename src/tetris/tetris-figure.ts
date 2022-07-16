@@ -1,13 +1,18 @@
 import { TetrisMargin, TetrisRotateDirection, TetrisShape } from './types';
 
-export abstract class TetrisFigureAbstract {
+export class TetrisFigure {
   public offset: TetrisMargin = { x: 4, y: 0 };
-  protected rotate!: TetrisRotateDirection;
+  public rotateVariants: Array<TetrisRotateDirection> = [0, 1, 2, 3];
+  private rotate: TetrisRotateDirection;
 
-  protected constructor(
-    protected shape: TetrisShape,
+  constructor(
+    private shape: TetrisShape,
+    rotateVariants?: Array<TetrisRotateDirection>,
   ) {
-    this.getRandomRotateDirection();
+    if (rotateVariants) {
+      this.rotateVariants = rotateVariants;
+    }
+    this.rotate = Math.round(Math.random() * (this.rotateVariants.length - 1)) as TetrisRotateDirection;
   }
 
   public doRotate(): void {
@@ -22,18 +27,14 @@ export abstract class TetrisFigureAbstract {
     return this.getShapeWithRotate(this.getNextRotateDirection())
   }
 
-  protected getNextRotateDirection(): TetrisRotateDirection {
-    if (this.rotate === 0) return 1;
-    if (this.rotate === 1) return 2;
-    if (this.rotate === 2) return 3;
-    if (this.rotate === 3) return 0;
-    return 0;
-  }
+  private getNextRotateDirection(): TetrisRotateDirection {
+    const idx = this.rotateVariants.findIndex((el) => el === this.rotate);
 
-  protected getRandomRotateDirection() {
-    return Array.from({ length: Math.round(Math.random() * 3.49) }).forEach((_) => {
-      this.doRotate();
-    })
+    if (this.rotateVariants[idx + 1]) {
+      return this.rotateVariants[idx + 1]
+    }
+
+    return this.rotateVariants[0]
   }
 
   private getShapeWithRotate(rotate: TetrisRotateDirection): TetrisShape {
