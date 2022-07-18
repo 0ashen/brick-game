@@ -15,7 +15,6 @@ import { TetrisDirection } from './types';
 @singleton()
 export class Tetris implements Game {
   private currentFigure: TetrisFigure = tetrisFiguresCooked[3]();
-  // 100 300 700 1500
   private displayMatrix: DisplayMatrix20x10 = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -41,6 +40,7 @@ export class Tetris implements Game {
   private readonly figures: Array<() => TetrisFigure> = tetrisFiguresCooked;
   private pause: boolean = false;
   private pausePromiseResolver: ((value: (PromiseLike<unknown> | unknown)) => void) | null = null;
+  private score: number = 0;
 
   constructor(
     @inject('Display') private displayService: Display,
@@ -213,10 +213,13 @@ export class Tetris implements Game {
   }
 
   private async removeFullRows(): Promise<void> {
+    let countBurnedRows = 0;
+
     let matrix = _.cloneDeep(this.displayMatrix);
     for (let y = 0; y < matrix.length; y++) {
       const row = matrix[y];
       if (row.every((el) => el == 1)) {
+        countBurnedRows++;
         for (let i = 0; i <= 4; i++) {
           row[i + 5] = 0;
           row[4 - i] = 0;
@@ -227,6 +230,10 @@ export class Tetris implements Game {
         await this.timeDelay(tetrisConfig.animDelayAfterTurnOffAllPixelInTheRow);
       }
     }
+    if (countBurnedRows > 0) {
+      this.score += tetrisConfig.scoreMultiple[countBurnedRows - 1];
+      this.renderScore();
+    }
   }
 
   private renderMatrix(): void {
@@ -236,6 +243,10 @@ export class Tetris implements Game {
   private renderMatrixWithFigure(): void {
     const resultScreen = this.figureMap2Matrix();
     this.displayService.drawMatrix(resultScreen);
+  }
+
+  private renderScore(): void {
+    this.displayService.drawScore(this.score);
   }
 
   private timeDelay(time: number): Promise<void> {

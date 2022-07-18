@@ -8,6 +8,7 @@ import { DisplayRenderWay } from './types';
 @singleton()
 export class DisplayService implements Display {
   private screen: DisplayMatrix20x10 = cookEmptyScreen();
+  private score: number = 0;
 
   private renderMethodList: Array<new() => DisplayRenderWay> = [
     DisplayReactWay,
@@ -22,6 +23,13 @@ export class DisplayService implements Display {
     }
     this.screen = matrix;
     this.currentRenderMethod.drawMatrix(this.screen);
+  }
+  public drawScore(score: number) {
+    if (this.score === score) {
+      return;
+    }
+    this.score = score;
+    this.currentRenderMethod.drawScore(this.score);
   }
 
 }

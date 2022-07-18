@@ -58,6 +58,13 @@ body {
     left: 108%;
     top: 0;
     font-size: 27px;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    & > span {
+      display: inline-block;
+      width: 0.46em;
+      text-align: center;
+    }
     @media screen and (max-width: 687px) {
       font-size: 4.116vw;
 
@@ -88,5 +95,6 @@ body {
     top: 0;
     border: 0;
     right: 0;
+    z-index: 999;
   }
 }

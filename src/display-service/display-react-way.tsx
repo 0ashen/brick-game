@@ -17,7 +17,7 @@ export const Layout: React.FC<{ matrix: DisplayMatrix20x10, score: string }> = (
         ))}
       </div>
       <div className="score">
-        {props.score}
+        {props.score.split('').map((letter, idx) => <span key={idx}>{letter}</span>)}
       </div>
     </>
   );
@@ -32,7 +32,8 @@ export class DisplayReactWay implements DisplayRenderWay {
   }
 
   public drawScore(score: number): void {
-    this.renderData(undefined, score)
+    console.log('>>>', score);
+    this.renderData(undefined, score);
   }
 
   private renderData(matrix?: DisplayMatrix20x10, score?: number): void {
@@ -44,11 +45,14 @@ export class DisplayReactWay implements DisplayRenderWay {
       this.score = '0'.repeat(repeatCount) + score.toString();
     }
 
-    let cookedScore = this.score ?? score;
-
-    ReactDOM.render(<Layout matrix={matrix ?? this.screenMatrix}
-                            score={cookedScore}/>,
-      document.querySelector('#app'));
+    ReactDOM.render(
+      (
+        <Layout matrix={this.screenMatrix}
+                score={this.score}
+        />
+      ),
+      document.querySelector('#app'),
+    );
   }
 }
 
