@@ -14,6 +14,7 @@ body {
   margin: 0;
   padding: 0;
   color: #312F30;
+  font-family: 'Ticking Timebomb BB';
 }
 
 body {
@@ -53,7 +54,6 @@ body {
   }
 
   .score {
-    font-family: 'Ticking Timebomb BB';
     position: absolute;
     left: 108%;
     top: 0;
@@ -69,6 +69,11 @@ body {
       font-size: 4.116vw;
 
     }
+  }
+  .pause {
+    position: absolute;
+    left: 108%;
+    font-weight: bold;
   }
 }
 
