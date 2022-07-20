@@ -19,6 +19,7 @@ export const Layout: React.FC<{ matrix: Array<Array<0 | 1>>, score: string }> = 
           key={idx}>{letter}</span>)}
       </div>
       <div className="pause">pause</div>
+      <div className="game-over">game over</div>
     </>
   );
 

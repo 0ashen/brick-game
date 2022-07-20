@@ -46,9 +46,6 @@ body {
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: min-content auto;
     gap: 2px;
-    position: absolute;
-    left: 0;
-    top: 0;
     width: 100%;
     height: 100%;
   }
@@ -67,19 +64,44 @@ body {
     }
     @media screen and (max-width: 687px) {
       font-size: 4.116vw;
-
     }
   }
   .pause {
     position: absolute;
     left: 108%;
     font-weight: bold;
+    white-space: nowrap;
+    font-size: 20px;
+    margin-left: 15px;
+    bottom: 29px;
+    opacity: 0.2;
+    &.active {
+      opacity: 1;
+    }
+    @media screen and (max-width: 687px) {
+      font-size: 2.9112081514vw;
+      margin-left: 2.1834061135vw;
+      bottom: 4.2212518195vw;
+    }
+  }
+  .game-over {
+    position: absolute;
+    left: 108%;
+    font-weight: bold;
+    bottom: 0;
+    white-space: nowrap;
+    font-size: 20px;
+    opacity: 0.2;
+    &.active {
+      opacity: 1;
+    }
+    @media screen and (max-width: 687px) {
+      font-size: 2.9112081514vw;
+    }
   }
 }
 
 .pixel {
-  margin: 0;
-  position: relative;
   box-sizing: border-box;
   opacity: 0.2;
   padding: 100% 0 0;
