@@ -14,3 +14,14 @@ Vector brick game [figma link](https://www.figma.com/file/2gC7AQj4kX9AqADoBxbwGl
 - [ ] tanks
 - [ ] shoot
 - [ ] snake
+
+##### brick game todo
+- [ ] add game over animation
+- [ ] add mini display
+- [ ] add speed indicator
+- [ ] add level indicator
+- [ ] add hi score
+
+##### todo tetris
+- [ ] fix bug, when pauing animation hide full row block, disable moving current figure
+- [ ] add increase speed 

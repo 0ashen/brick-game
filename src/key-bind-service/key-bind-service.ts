@@ -38,7 +38,7 @@ export class KeyBindService implements KeyBind {
     };
   }
 
-  public bind(button: KeyBindSlot, handler: KeyBindHandler) {
+  public bindHandler(button: KeyBindSlot, handler: KeyBindHandler) {
     this.mapSlot2Handler[button].push(handler);
   }
 }

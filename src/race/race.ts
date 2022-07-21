@@ -9,6 +9,9 @@ export class Race implements Game {
   ) {
   }
 
+  public doPause() {
+  }
+
   public run() {
   }
 }

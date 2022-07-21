@@ -13,6 +13,7 @@ export class DisplayService implements Display {
   ];
   private currentRenderMethod: DisplayRenderWay = container.resolve(this.renderMethodList[0]);
   private score: string = '000000';
+  private pause: boolean = false;
   private screen: DisplayMatrix20x10 = cookEmptyScreen();
 
   public drawMatrix(matrix: DisplayMatrix20x10) {
@@ -28,11 +29,13 @@ export class DisplayService implements Display {
     this.score = '0'.repeat(repeatCount) + score.toString();
     this.renderData();
   }
-  public pause(status: boolean) {
 
+  public drawPause(pause: boolean) {
+    this.pause = pause;
+    this.renderData();
   }
 
   private renderData(): void {
-    this.currentRenderMethod.render(this.screen, this.score)
+    this.currentRenderMethod.render(this.screen, this.score, this.pause);
   }
 }

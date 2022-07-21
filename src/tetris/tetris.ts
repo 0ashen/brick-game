@@ -32,10 +32,10 @@ export class Tetris implements Game {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ] as unknown as DisplayMatrix20x10;
   private readonly figures: Array<() => TetrisFigure> = tetrisFiguresCooked;
   private pause: boolean = false;
@@ -47,17 +47,18 @@ export class Tetris implements Game {
     @inject('Bindings') private keyBindService: KeyBind,
   ) {
     this.refreshFigure();
+    this.keyBindService.bindHandler(KeyBindSlot.Left, this.handleFigureMove(TetrisDirection.Left));
+    this.keyBindService.bindHandler(KeyBindSlot.Right, this.handleFigureMove(TetrisDirection.Right));
+    this.keyBindService.bindHandler(KeyBindSlot.Down, this.handleFigureMove(TetrisDirection.Down));
+    this.keyBindService.bindHandler(KeyBindSlot.Top, this.handleFigureRotate);
+  }
 
-    this.keyBindService.bind(KeyBindSlot.Left, this.handleFigureMove(TetrisDirection.Left));
-    this.keyBindService.bind(KeyBindSlot.Right, this.handleFigureMove(TetrisDirection.Right));
-    this.keyBindService.bind(KeyBindSlot.Down, this.handleFigureMove(TetrisDirection.Down));
-    this.keyBindService.bind(KeyBindSlot.Top, this.handleFigureRotate);
-    this.keyBindService.bind(KeyBindSlot.StartPause, () => {
-      if (this.pause && this.pausePromiseResolver) {
-        this.pausePromiseResolver(undefined);
-      }
-      this.pause = !this.pause
-    });
+  public doPause() {
+    if (this.pause && this.pausePromiseResolver) {
+      this.pausePromiseResolver(undefined);
+    }
+    this.pause = !this.pause
+    this.displayService.drawPause(this.pause);
   }
 
   public async run(): Promise<void> {

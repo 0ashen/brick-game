@@ -77,6 +77,21 @@ body {
     opacity: 0.2;
     &.active {
       opacity: 1;
+      animation-name: stretch;
+      animation-duration: 0.5s;
+      animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+      animation-direction: alternate;
+      animation-iteration-count: infinite;
+      animation-play-state: running;
+      @keyframes stretch {
+        0% {
+          opacity: 1;
+        }
+
+        100% {
+          opacity: 0.2;
+        }
+      }
     }
     @media screen and (max-width: 687px) {
       font-size: 2.9112081514vw;
@@ -92,11 +107,23 @@ body {
     white-space: nowrap;
     font-size: 20px;
     opacity: 0.2;
+
     &.active {
       opacity: 1;
     }
     @media screen and (max-width: 687px) {
       font-size: 2.9112081514vw;
+    }
+  }
+  .clover {
+    position: absolute;
+    left: 108%;
+    bottom: 65px;
+    opacity: 1;
+    margin-left: 12px;
+    img {
+      width: 50px;
+      height: 50px;
     }
   }
 }

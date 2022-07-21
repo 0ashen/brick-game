@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { container } from 'tsyringe';
+import { container, Lifecycle } from 'tsyringe';
 import { Display, Game, KeyBind } from '~/@types';
 import { DisplayService } from '~/display-service';
 import { KeyBindService } from '~/key-bind-service';
@@ -13,13 +13,13 @@ import { BrickGame } from './brick-game';
 cancelScrollOnPressArrows();
 
 container
-  .register<Display>('Display', DisplayService)
-  .register<KeyBind>('Bindings', KeyBindService)
+  .register<Display>('Display', DisplayService, { lifecycle: Lifecycle.Singleton })
+  .register<KeyBind>('Bindings', KeyBindService, { lifecycle: Lifecycle.Singleton })
   .register<Array<() => Game>>('GameList', {
     useValue: [
       () => container.resolve(Tetris),
-      () => container.resolve(Race),
-    ],
+      () => container.resolve(Race)
+    ]
   });
 
 // run
