@@ -15,8 +15,9 @@ export class BrickGame {
     });
   }
 
-  public start() {
-    this.selectedGame.run();
+  public async start() {
+    await this.selectedGame.run();
+    await this.selectedGame.gameOver();
   }
 
 }
