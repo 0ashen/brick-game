@@ -21,6 +21,7 @@ Vector brick game [figma link](https://www.figma.com/file/2gC7AQj4kX9AqADoBxbwGl
 - [ ] add speed indicator
 - [ ] add level indicator
 - [ ] add hi score
+- [ ] add sound service
 
 ##### todo tetris
 - [ ] fix bug, when pauing animation hide full row block, disable moving current figure

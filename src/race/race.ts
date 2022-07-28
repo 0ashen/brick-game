@@ -14,4 +14,6 @@ export class Race implements Game {
 
   public run() {
   }
+  public gameOver() {
+  }
 }

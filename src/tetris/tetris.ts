@@ -5,7 +5,7 @@ import {
   DisplayMatrix20x10,
   Game,
   KeyBind,
-  KeyBindSlot,
+  KeyBindSlot
 } from '~/@types';
 import { tetrisConfig } from './tetris-config';
 import { TetrisFigure } from './tetris-figure';
@@ -35,7 +35,7 @@ export class Tetris implements Game {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   ] as unknown as DisplayMatrix20x10;
   private readonly figures: Array<() => TetrisFigure> = tetrisFiguresCooked;
   private pause: boolean = false;
@@ -44,7 +44,7 @@ export class Tetris implements Game {
 
   constructor(
     @inject('Display') private displayService: Display,
-    @inject('Bindings') private keyBindService: KeyBind,
+    @inject('Bindings') private keyBindService: KeyBind
   ) {
     this.refreshFigure();
     this.keyBindService.bindHandler(KeyBindSlot.Left, this.handleFigureMove(TetrisDirection.Left));
@@ -57,8 +57,11 @@ export class Tetris implements Game {
     if (this.pause && this.pausePromiseResolver) {
       this.pausePromiseResolver(undefined);
     }
-    this.pause = !this.pause
+    this.pause = !this.pause;
     this.displayService.drawPause(this.pause);
+  }
+
+  public gameOver() {
   }
 
   public async run(): Promise<void> {
@@ -179,7 +182,7 @@ export class Tetris implements Game {
       this.currentFigure.doRotate();
       this.renderMatrixWithFigure();
     }
-  }
+  };
 
   private async pauseAction(): Promise<unknown> {
     if (this.pause) {
@@ -260,14 +263,14 @@ export class Tetris implements Game {
         await new Promise((res2) => {
           setInterval(() => {
             res2(undefined);
-          }, timeSegment)
+          }, timeSegment);
         });
         await this.pauseAction();
       }
       await new Promise((res2) => {
         setInterval(() => {
           res2(undefined);
-        }, time % timeSegment)
+        }, time % timeSegment);
       });
 
       await this.pauseAction();
@@ -275,6 +278,5 @@ export class Tetris implements Game {
       res();
     });
   };
-
 }
 
