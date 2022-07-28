@@ -26,7 +26,7 @@ export const Layout: React.FC<LayoutProps> = (props) =>
       <div className={clsx('pause', props.pause && 'active')}>pause</div>
       <div className='game-over'>game over</div>
       <div className='clover'>
-        <img src='/clover.svg' alt='clover' />
+        <img src='clover.svg' alt='clover' />
       </div>
     </>
   );
